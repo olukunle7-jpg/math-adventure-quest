@@ -1,83 +1,115 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Math Adventure Quest</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Math Adventure Quest V3</title>
 <style>
-body{
-font-family:Arial,sans-serif;
-text-align:center;
-background:#87CEEB;
-padding:20px;
-}
-.container{
-background:white;
-max-width:500px;
-margin:auto;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 10px gray;
-}
-button{
-padding:10px 20px;
-font-size:18px;
-background:green;
-color:white;
-border:none;
-border-radius:8px;
-cursor:pointer;
-}
-input{
-padding:10px;
-font-size:18px;
-width:100px;
-text-align:center;
-}
-#result{
-font-weight:bold;
-}
-h1{
-color:#1E3A8A;
-}
+body{font-family:Arial;margin:0;background:#74c0fc;text-align:center}
+.container{max-width:900px;margin:20px auto;background:white;padding:20px;border-radius:16px}
+.stats{display:flex;justify-content:space-around;flex-wrap:wrap}
+.question{font-size:2rem;margin:20px}
+input,select,button{padding:10px;font-size:1rem;margin:5px}
+.badge{font-size:1.3rem}
+.hidden{display:none}
 </style>
 </head>
 <body>
 <div class="container">
-<h1>Math Adventure Quest</h1>
-<h2 id="question"></h2>
+<h1>🏆 Math Adventure Quest V3</h1>
+<div id="start">
+<input id="player" placeholder="Enter player name">
+<select id="difficulty">
+<option value="10">Easy</option>
+<option value="25">Medium</option>
+<option value="50">Hard</option>
+</select>
+<button onclick="startGame()">Start Adventure</button>
+</div>
+<div id="game" class="hidden">
+<h2 id="welcome"></h2>
+<div class="stats">
+<div>⭐ Score: <span id="score">0</span></div>
+<div>❤️ Lives: <span id="lives">3</span></div>
+<div>📈 Level: <span id="level">1</span></div>
+<div>⏱️ Time: <span id="timer">90</span></div>
+</div>
+<div class="question" id="question"></div>
 <input type="number" id="answer">
-<br><br>
 <button onclick="checkAnswer()">Submit</button>
 <h3 id="result"></h3>
-<p>Score: <span id="score">0</span></p>
+<h2 class="badge" id="badge"></h2>
+<h3>🏅 Achievements</h3>
+<ul id="achievements"></ul>
+</div>
 </div>
 <script>
-let score = 0;
-let num1;
-let num2;
-let correctAnswer;
+let score=0,lives=3,level=1,time=90,correct=0,answer;
+let timerInt;
+const achievements=[];
+function startGame(){
+ let name=document.getElementById('player').value||'Player';
+ document.getElementById('welcome').innerText='Welcome '+name+'!';
+ document.getElementById('start').classList.add('hidden');
+ document.getElementById('game').classList.remove('hidden');
+ generateQuestion();
+ timerInt=setInterval(()=>{
+   time--;
+   timer.textContent=time;
+   if(time<=0) endGame();
+ },1000);
 function generateQuestion(){
-num1 = Math.floor(Math.random()*20)+1;
-num2 = Math.floor(Math.random()*20)+1;
-correctAnswer = num1 + num2;
-document.getElementById("question").innerHTML =
-num1 + " + " + num2 + " = ?";
-document.getElementById("answer").value="";
+ let max=parseInt(document.getElementById('difficulty').value);
+ let a=Math.floor(Math.random()*max)+1;
+ let b=Math.floor(Math.random()*max)+1;
+ let op=Math.floor(Math.random()*5);
+ switch(op){
+ case 0: answer=a+b; question.innerHTML=`${a} + ${b} = ?`; break;
+ case 1: if(a<b){[a,b]=[b,a]} answer=a-b; question.innerHTML=`${a} - ${b} = ?`; break;
+ case 2: a=Math.floor(Math.random()*12)+1; b=Math.floor(Math.random()*12)+1; answer=a*b; question.innerHTML=`${a} × ${b} = ?`; break;
+ case 3: a=Math.floor(Math.random()*12)+1; b=Math.floor(Math.random()*12)+1; let p=a*b; answer=a; question.innerHTML=`${p} ÷ ${b} = ?`; break;
+ case 4: answer=a+b; question.innerHTML=`A class has ${a} boys and ${b} girls. Total students = ?`; break;
+ }
+}
+function updateAchievements(){
+ if(score>=50 && !achievements.includes("Bronze")){
+   achievements.push("🥉 Bronze Explorer");
+ }
+ if(score>=150 && !achievements.includes("Silver")){
+   achievements.push("🥈 Silver Explorer");
+ }
+ if(score>=300 && !achievements.includes("Gold")){
+   achievements.push("🥇 Gold Explorer");
+ }
+ document.getElementById("achievements").innerHTML=achievements.map(a=>"<li>"+a+"</li>").join("");
 }
 function checkAnswer(){
-let userAnswer =
-parseInt(document.getElementById("answer").value);
-if(userAnswer === correctAnswer){
-score += 10;
-document.getElementById("result").innerHTML =
-"✅ Correct!";
-}else{
-document.getElementById("result").innerHTML =
-"❌ Wrong! Answer is " + correctAnswer;
+ let user=parseInt(document.getElementById('answer').value);
+ if(user===answer){
+   score+=10;
+   correct++;
+   result.innerHTML="✅ Correct!";
+   if(correct%10===0){level++;}
+ }else{
+   lives--;
+   result.innerHTML="❌ Incorrect. Correct answer was "+answer;
+ }
+ scoreEl.textContent=score;
+ livesEl.textContent=lives;
+ levelEl.textContent=level;
+ if(score>=300) badge.innerHTML="👑 Math Champion";
+ else if(score>=150) badge.innerHTML="🥇 Gold Badge";
+ else if(score>=50) badge.innerHTML="🥉 Bronze Badge";
+ updateAchievements();
+ if(lives<=0) endGame();
+ answerInput=document.getElementById('answer');
+ answerInput.value='';
+ generateQuestion();
+function endGame(){
+ clearInterval(timerInt);
+ alert("Game Over! Score: "+score+" | Level: "+level);
+ location.reload();
 }
-document.getElementById("score").innerHTML = score;
-generateQuestion();
-}
-generateQuestion();
 </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+startGamertGameOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -42,74 +42,141 @@ input,select,button{padding:10px;font-size:1rem;margin:5px}
 <h3>🏅 Achievements</h3>
 <ul id="achievements"></ul>
 </div>
-</div>
+</dile
 <script>
-let score=0,lives=3,level=1,time=90,correct=0,answer;
-let timerInt;
-const achievements=[];
-function startGame(){
- let name=document.getElementById('player').value||'Player';
- document.getElementById('welcome').innerText='Welcome '+name+'!';
- document.getElementById('start').classList.add('hidden');
- document.getElementById('game').classList.remove('hidden');
- generateQuestion();
- timerInt=setInterval(()=>{
-   time--;
-   timer.textContent=time;
-   if(time<=0) endGame();
- },1000);
-function generateQuestion(){
- let max=parseInt(document.getElementById('difficulty').value);
- let a=Math.floor(Math.random()*max)+1;
- let b=Math.floor(Math.random()*max)+1;
- let op=Math.floor(Math.random()*5);
- switch(op){
- case 0: answer=a+b; question.innerHTML=`${a} + ${b} = ?`; break;
- case 1: if(a<b){[a,b]=[b,a]} answer=a-b; question.innerHTML=`${a} - ${b} = ?`; break;
- case 2: a=Math.floor(Math.random()*12)+1; b=Math.floor(Math.random()*12)+1; answer=a*b; question.innerHTML=`${a} × ${b} = ?`; break;
- case 3: a=Math.floor(Math.random()*12)+1; b=Math.floor(Math.random()*12)+1; let p=a*b; answer=a; question.innerHTML=`${p} ÷ ${b} = ?`; break;
- case 4: answer=a+b; question.innerHTML=`A class has ${a} boys and ${b} girls. Total students = ?`; break;
- }
+let score = 0;
+let lives = 3;
+let level = 1;
+let time = 90;
+let correct = 0;
+let answer = 0;
+let timerInt = null;
+let achievements = [];
+function startGame() {
+    let name = document.getElementById("player").value || "Player";
+    document.getElementById("welcome").innerText =
+        "Welcome " + name + "!";
+    document.getElementById("start").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    generateQuestion();
+    timerInt = setInterval(function () {
+        time--;
+        document.getElementById("timer").textContent = time;
+        if (time <= 0) {
+            endGame();
+        }
+    }, 1000);
 }
-function updateAchievements(){
- if(score>=50 && !achievements.includes("Bronze")){
-   achievements.push("🥉 Bronze Explorer");
- }
- if(score>=150 && !achievements.includes("Silver")){
-   achievements.push("🥈 Silver Explorer");
- }
- if(score>=300 && !achievements.includes("Gold")){
-   achievements.push("🥇 Gold Explorer");
- }
- document.getElementById("achievements").innerHTML=achievements.map(a=>"<li>"+a+"</li>").join("");
+function generateQuestion() {
+    let max = parseInt(
+        document.getElementById("difficulty").value
+    );
+    let a = Math.floor(Math.random() * max) + 1;
+    let b = Math.floor(Math.random() * max) + 1;
+    let op = Math.floor(Math.random() * 5);
+    if (op === 0) {
+        answer = a + b;
+        document.getElementById("question").innerHTML =
+            a + " + " + b + " = ?";
+    }
+    else if (op === 1) {
+        if (a < b) {
+            let temp = a;
+            a = b;
+            b = temp;
+        }
+        answer = a - b;
+        document.getElementById("question").innerHTML =
+            a + " - " + b + " = ?";
+    }
+    else if (op === 2) {
+        a = Math.floor(Math.random() * 12) + 1;
+        b = Math.floor(Math.random() * 12) + 1;
+
+        answer = a * b;
+
+        document.getElementById("question").innerHTML =
+            a + " × " + b + " = ?";
+    }
+    else if (op === 3) {
+
+        a = Math.floor(Math.random() * 12) + 1;
+        b = Math.floor(Math.random() * 12) + 1;
+        let product = a * b;
+        answer = a;
+        document.getElementById("question").innerHTML =
+            product + " ÷ " + b + " = ?";
+    }
+    else {
+        answer = a + b;
+        document.getElementById("question").innerHTML =
+            "A class has " + a +
+            " boys and " + b +
+            " girls. Total students = ?";
+    }
 }
-function checkAnswer(){
- let user=parseInt(document.getElementById('answer').value);
- if(user===answer){
-   score+=10;
-   correct++;
-   result.innerHTML="✅ Correct!";
-   if(correct%10===0){level++;}
- }else{
-   lives--;
-   result.innerHTML="❌ Incorrect. Correct answer was "+answer;
- }
- scoreEl.textContent=score;
- livesEl.textContent=lives;
- levelEl.textContent=level;
- if(score>=300) badge.innerHTML="👑 Math Champion";
- else if(score>=150) badge.innerHTML="🥇 Gold Badge";
- else if(score>=50) badge.innerHTML="🥉 Bronze Badge";
- updateAchievements();
- if(lives<=0) endGame();
- answerInput=document.getElementById('answer');
- answerInput.value='';
- generateQuestion();
-function endGame(){
- clearInterval(timerInt);
- alert("Game Over! Score: "+score+" | Level: "+level);
- location.reload();
+function updateAchievements() {
+    achievements = [];
+    if (score >= 50)
+        achievements.push("🥉 Bronze Explorer");
+    if (score >= 150)
+        achievements.push("🥈 Silver Explorer");
+
+    if (score >= 300)
+        achievements.push("🥇 Gold Explorer");
+    document.getElementById("achievements").innerHTML =
+        achievements.map(function (item) {
+            return "<li>" + item + "</li>";
+        }).join("");
 }
-</script>
-</body>
+function checkAnswer() {
+    let user =
+        parseInt(document.getElementById("answer").value);
+    if (user === answer) {
+        score += 10;
+        correct++;
+        document.getElementById("result").innerHTML =
+            "✅ Correct!";
+
+        if (correct % 10 === 0) {
+            level++;
+        }
+    } else {
+        lives--;
+        document.getElementById("result").innerHTML =
+            "❌ Wrong! Correct answer was " + answer;
+    }
+    document.getElementById("score").textContent = score;
+    document.getElementById("lives").textContent = lives;
+    document.getElementById("level").textContent = level;
+    if (score >= 300) {
+        document.getElementById("badge").innerHTML =
+            "👑 Math Champion";
+    else if (score >= 150) {
+        document.getElementById("badge").innerHTML =
+            "🥇 Gold Badge";
+    }
+    else if (score >= 50) {
+        document.getElementById("badge").innerHTML =
+            "🥉 Bronze Badge";
+    }
+    updateAchievements();
+    document.getElementById("answer").value = "";
+    if (lives <= 0) {
+        endGame();
+        return;
+    }
+    generateQuestion();
+}
+function endGame() {
+    clearInterval(timerInt);
+
+    alert(
+        "Game Over!\n\nScore: " +
+        score +
+        "\nLevel: " +
+        level
+    );
+    location.reload();
+ </scriptdy>
 </html>

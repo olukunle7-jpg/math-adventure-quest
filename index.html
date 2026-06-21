@@ -52,6 +52,7 @@ input{
 </div>
 <script>
 let score = 0;
+let level = 1;
 let correctAnswer = 0;
 function startGame(){
     let name =
@@ -66,28 +67,65 @@ function startGame(){
     generateQuestion();
 }
 function generateQuestion(){
-    let a = Math.floor(Math.random()*20)+1;
-    let b = Math.floor(Math.random()*20)+1;
-    correctAnswer = a + b;
-    document.getElementById("question").innerHTML =
-    a + " + " + b + " = ?";
-}
-function checkAnswer(){
-    let userAnswer =
-    parseInt(document.getElementById("answer").value);
-    if(userAnswer === correctAnswer){
-        score += 10;
-        document.getElementById("score").innerHTML =
-        score;
-        document.getElementById("result").innerHTML =
-        "✅ Correct!";
-    }else{
-        document.getElementById("result").innerHTML =
-        "❌ Wrong! Answer = " + correctAnswer;
+    let operation =
+    Math.floor(Math.random()*4);
+    let a,b;
+    if(operation===0){
+        a=Math.floor(Math.random()*20)+1;
+        b=Math.floor(Math.random()*20)+1;
+        correctAnswer=a+b;
+        document.getElementById("question").innerHTML=
+        a+" + "+b+" = ?";
     }
-    document.getElementById("answer").value = "";
-    generateQuestion();
+    else if(operation===1){
+        a=Math.floor(Math.random()*20)+1;
+        b=Math.floor(Math.random()*20)+1;
+        if(a<b){
+            let temp=a;
+            a=b;
+            b=temp;
+        }
+        correctAnswer=a-b;
+        document.getElementById("question").innerHTML=
+        a+" - "+b+" = ?";
+    }
+    else if(operation===2){
+        a=Math.floor(Math.random()*12)+1;
+        b=Math.floor(Math.random()*12)+1;
+        correctAnswer=a*b;
+        document.getElementById("question").innerHTML=
+        a+" × "+b+" = ?";
+    }
+    else{
+        a=Math.floor(Math.random()*12)+1;
+        b=Math.floor(Math.random()*12)+1;
+        let product=a*b;
+        correctAnswer=a;
+        document.getElementById("question").innerHTML=
+        product+" ÷ "+b+" = ?";
+    }
 }
+function checkAnswer(document.getElementById("level").innerHTML = level;){
+    let userAnswer=
+    parseInt(document.getElementById("answer").value);
+    if(userAnswer===correctAnswer){
+        score+=10;
+        document.getElementById("result").innerHTML=
+        "✅ Correct!";
+        if(score%100===0){
+            level++;
+        }
+    }else{
+        document.getElementById("result").innerHTML=
+        "❌ Wrong! Correct answer was "+
+        correctAnswer;
+    }
+    document.getElementById("score").innerHTML=
+    score;
+    <p>📈 Level: <span id="level">1</span></p>
+    generateQuestion();
+    document.getElementById("answer").value="";
+    }
 </script>
 </body>
     </html>

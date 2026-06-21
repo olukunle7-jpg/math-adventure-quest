@@ -1,15 +1,93 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math Adventure Quest</title>
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#87CEEB;
+    text-align:center;
+    margin:0;
+    padding:20px;
+}
+.container{
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+button{
+    padding:10px 20px;
+    font-size:18px;
+    cursor:pointer;
+}
+input{
+    padding:10px;
+    font-size:18px;
+}
+.question{
+    font-size:30px;
+    margin:20px;
+}
+</style>
 </head>
 <body>
-<h1>Math Adventure Test</h1>
-<button onclick="hello()">Start Adventure</button>
+<div class="container">
+<h1>🏆 Math Adventure Quest</h1>
+<p>Enter your name:</p>
+<input type="text" id="playerName">
+<br><br>
+<button onclick="startGame()">Start Adventure</button>
+<div id="gameArea" style="display:none;">
+<h2 id="welcome"></h2>
+<p>⭐ Score: <span id="score">0</span></p>
+<div class="question" id="question"></div>
+<input type="number" id="answer">
+<button onclick="checkAnswer()">Submit</button>
+<p id="result"></p>
+</div>
+</div>
 <script>
-function hello() {
-    alert("Game is working!");
+let score = 0;
+let correctAnswer = 0;
+function startGame(){
+    let name =
+    document.getElementById("playerName").value;
+    if(name === ""){
+        name = "Player";
+    }
+    document.getElementById("welcome").innerHTML =
+    "Welcome " + name + "!";
+    document.getElementById("gameArea").style.display =
+    "block";
+    generateQuestion();
+}
+function generateQuestion(){
+    let a = Math.floor(Math.random()*20)+1;
+    let b = Math.floor(Math.random()*20)+1;
+    correctAnswer = a + b;
+    document.getElementById("question").innerHTML =
+    a + " + " + b + " = ?";
+}
+function checkAnswer(){
+    let userAnswer =
+    parseInt(document.getElementById("answer").value);
+    if(userAnswer === correctAnswer){
+        score += 10;
+        document.getElementById("score").innerHTML =
+        score;
+        document.getElementById("result").innerHTML =
+        "✅ Correct!";
+    }else{
+        document.getElementById("result").innerHTML =
+        "❌ Wrong! Answer = " + correctAnswer;
+    }
+    document.getElementById("answer").value = "";
+    generateQuestion();
 }
 </script>
 </body>
-</html>
+    </html>
